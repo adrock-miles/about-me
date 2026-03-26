@@ -1,7 +1,7 @@
 export interface Project {
   name: string;
   description: string;
-  language: string;
+  languages: string[];
   topics: string[];
   url: string;
   stars: number;

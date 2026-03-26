@@ -9,7 +9,7 @@ import (
 	"github.com/adrock-miles/about-me/internal/application/contact"
 	"github.com/adrock-miles/about-me/internal/application/project"
 	"github.com/adrock-miles/about-me/internal/infrastructure/email"
-	"github.com/adrock-miles/about-me/internal/infrastructure/github"
+	projectRepo "github.com/adrock-miles/about-me/internal/infrastructure/project"
 	"github.com/adrock-miles/about-me/internal/interfaces/http/handler"
 	"github.com/adrock-miles/about-me/internal/interfaces/http/router"
 	"github.com/spf13/cobra"
@@ -50,10 +50,7 @@ func initConfig() {
 
 func runServer(cmd *cobra.Command, args []string) error {
 	// Infrastructure layer
-	githubClient := github.NewClient(
-		viper.GetString("github.username"),
-		viper.GetString("github.api_url"),
-	)
+	projects := projectRepo.NewStaticRepository()
 	emailSender := email.NewSender(
 		viper.GetString("smtp.host"),
 		viper.GetInt("smtp.port"),
@@ -62,7 +59,7 @@ func runServer(cmd *cobra.Command, args []string) error {
 	)
 
 	// Application layer
-	projectService := project.NewService(githubClient)
+	projectService := project.NewService(projects)
 	contactService := contact.NewService(emailSender, viper.GetString("contact.email"))
 
 	// Interface layer
