@@ -38,7 +38,7 @@ func (r *StaticRepository) FetchRecentProjects() ([]domain.Project, error) {
 		{
 			Name:        "go-laserbeak",
 			Description: "A fast, concurrent web scraping framework written in Go.",
-			Languages:   []string{"Go", "Makefile", "Dockerfile"},
+			Languages:   []string{"Go"},
 			Topics:      nil,
 			URL:         "https://github.com/adrock-miles/go-laserbeak",
 			Stars:       1,
