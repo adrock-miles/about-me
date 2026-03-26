@@ -1,0 +1,15 @@
+server:
+  port: 8080
+  host: "0.0.0.0"
+
+github:
+  username: "adrock-miles"
+  api_url: "https://api.github.com"
+
+contact:
+  email: "miles.adrock@gmail.com"
+
+smtp:
+  host: "smtp.gmail.com"
+  port: 587
+  from: "noreply@about-me.dev"
