@@ -40,6 +40,9 @@ func initConfig() {
 	viper.AddConfigPath(".")
 	viper.AutomaticEnv()
 
+	// Bind PORT env var (used by Railway and other PaaS providers)
+	viper.BindEnv("server.port", "PORT")
+
 	if err := viper.ReadInConfig(); err != nil {
 		log.Printf("Warning: no config file found: %v", err)
 	}

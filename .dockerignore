@@ -1,0 +1,9 @@
+web/node_modules
+web/dist
+bin/
+tmp/
+.git
+.gitignore
+*.md
+.env*
+server
