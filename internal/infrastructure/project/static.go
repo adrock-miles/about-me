@@ -18,6 +18,15 @@ func NewStaticRepository() *StaticRepository {
 func (r *StaticRepository) FetchRecentProjects() ([]domain.Project, error) {
 	return []domain.Project{
 		{
+			Name:        "about-me",
+			Description: "Personal portfolio site built with Go, React, TypeScript, and Radix UI.",
+			Languages:   []string{"Go", "TypeScript", "CSS"},
+			Topics:      nil,
+			URL:         "https://github.com/adrock-miles/about-me",
+			Stars:       0,
+			UpdatedAt:   time.Date(2026, 3, 26, 20, 10, 55, 0, time.UTC),
+		},
+		{
 			Name:        "poe-armory",
 			Description: "A build and item planning toolkit for Path of Exile.",
 			Languages:   []string{"TypeScript"},
@@ -52,15 +61,6 @@ func (r *StaticRepository) FetchRecentProjects() ([]domain.Project, error) {
 			URL:         "https://github.com/adrock-miles/system-showcase",
 			Stars:       0,
 			UpdatedAt:   time.Date(2026, 2, 19, 4, 42, 36, 0, time.UTC),
-		},
-		{
-			Name:        "clawd",
-			Description: "Clawing back your time with simple task management.",
-			Languages:   []string{"Go"},
-			Topics:      nil,
-			URL:         "https://github.com/adrock-miles/clawd",
-			Stars:       0,
-			UpdatedAt:   time.Date(2026, 2, 17, 0, 12, 8, 0, time.UTC),
 		},
 	}, nil
 }
