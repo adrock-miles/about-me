@@ -6,7 +6,7 @@ import "time"
 type Project struct {
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
-	Language    string    `json:"language"`
+	Languages   []string  `json:"languages"`
 	Topics      []string  `json:"topics"`
 	URL         string    `json:"url"`
 	Stars       int       `json:"stars"`

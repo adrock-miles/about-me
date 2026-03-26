@@ -6,7 +6,7 @@ function Footer() {
       <Separator size="4" mb="4" />
       <Flex justify="between" align="center">
         <Text size="1" color="gray">
-          &copy; {new Date().getFullYear()} Miles Adrock
+          &copy; {new Date().getFullYear()} Adam Miles
         </Text>
         <Flex gap="4">
           <Text size="1" color="gray" asChild>

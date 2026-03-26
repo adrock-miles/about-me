@@ -21,7 +21,7 @@ function Nav() {
     >
       <nav>
         <Text size="4" weight="medium" style={{ letterSpacing: "-0.02em" }}>
-          <Link to="/">miles adrock</Link>
+          <Link to="/">adam miles</Link>
         </Text>
         <Flex gap="6">
           {navItems.map((item) => (

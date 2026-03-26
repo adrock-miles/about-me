@@ -78,11 +78,11 @@ function Projects() {
                 </Flex>
 
                 <Flex gap="2" wrap="wrap">
-                  {project.language && (
-                    <Badge variant="soft" color="gray" size="1">
-                      {project.language}
+                  {project.languages?.map((lang) => (
+                    <Badge key={lang} variant="soft" color="gray" size="1">
+                      {lang}
                     </Badge>
-                  )}
+                  ))}
                   {project.topics?.map((topic) => (
                     <Badge key={topic} variant="outline" color="gray" size="1">
                       {topic}

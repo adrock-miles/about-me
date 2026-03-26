@@ -10,7 +10,7 @@ function Home() {
             Software Engineer
           </Text>
           <Heading size="8" weight="medium" style={{ letterSpacing: "-0.03em" }}>
-            Hi, I'm Miles Adrock.
+            Hi, I'm Adam Miles.
           </Heading>
         </Box>
 
