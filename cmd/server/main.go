@@ -14,7 +14,7 @@ import (
 	"github.com/adrock-miles/about-me/internal/platform/notify"
 	"github.com/adrock-miles/about-me/internal/platform/ratelimit"
 	"github.com/adrock-miles/about-me/internal/platform/server"
-	"github.com/adrock-miles/about-me/web"
+	"github.com/adrock-miles/about-me/internal/web"
 )
 
 func main() {
