@@ -15,6 +15,7 @@
   <form
     class="contact-form"
     data-on:submit__prevent="@post('/contact', {contentType: 'form'})"
+    data-indicator="_sending"
   >
     {{if .Error}}
     <p class="contact-error" role="alert">{{.Error}}</p>
@@ -45,7 +46,6 @@
       <button
         type="submit"
         class="contact-submit"
-        data-indicator="_sending"
         data-attr:disabled="$_sending"
       >
         <span data-show="!$_sending">Send <span class="arrow">→</span></span>
