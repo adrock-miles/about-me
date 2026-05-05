@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/go-chi/chi/v5 v5.2.5
+	github.com/joho/godotenv v1.5.1
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2
 )
