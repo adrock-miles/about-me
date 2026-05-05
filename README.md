@@ -50,6 +50,8 @@ PORTFOLIO_EMAIL_RESEND_API_KEY=re_...
 
 Railway's generic `PORT` is also bound directly.
 
+For local development, copy [`.env.example`](./.env.example) to `.env` (gitignored). The server loads it via `godotenv` at startup and Viper picks up the values like any other env override.
+
 ### Email providers
 
 The contact form picks a sender based on `email.provider`:

@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 
 	"github.com/adrock-miles/about-me/internal/handlers"
@@ -51,6 +52,13 @@ func init() {
 func runServe(cmd *cobra.Command, _ []string) error {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
 	slog.SetDefault(logger)
+
+	// Optional .env for local dev. Silently skipped in prod where the
+	// file doesn't exist; warn on malformed files so typos don't fail
+	// silently.
+	if err := godotenv.Load(); err != nil && !os.IsNotExist(err) {
+		logger.Warn("loading .env file", "error", err)
+	}
 
 	cfg, err := config.Load()
 	if err != nil {
