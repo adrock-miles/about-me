@@ -79,24 +79,24 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 			Tagline:  "Adam Miles is a software engineer crafting calm, considered tools — where the seams hold up under pressure and the edges still feel hand-finished.",
 			Meta: []HeroMeta{
 				{"Currently", "Building independent"},
-				{"Based in", "Brooklyn, NY"},
+				{"Based in", "Oklahoma City, OK"},
 				{"Available", "Q3 2026"},
 			},
 		},
 		Projects: content.Projects(),
 		About: AboutContent{
 			Paragraphs: []string{
-				"I've spent ten years writing software that has to <em>actually work</em> — for people, in the wild, on the worst day of their week. Systems people lean on quietly.",
+				"I've spent sixteen years writing software that has to <em>actually work</em> — for people, in the wild, on the worst day of their week. Systems people lean on quietly.",
 				"I move between the runtime and the interface comfortably. I like problems where the right answer is a structural one, not a feature.",
 				"Outside of work I read about old infrastructure, take long walks, and keep a small studio practice in printmaking — which is where the love of <em>silhouette and weight</em> in this site comes from.",
 			},
 			Stats: []Stat{
-				{"Years building", "10"},
-				{"Languages", "Go · TypeScript · Rust · Swift"},
+				{"Years building", "16"},
+				{"Languages", "Go · PHP · Swift"},
 				{"Currently", "Independent"},
-				{"Based in", "Brooklyn, NY"},
+				{"Based in", "Oklahoma City, OK"},
 				{"Stack here", "Go · Datastar · Tailwind v4"},
-				{"Reading now", "The Soul of a New Machine"},
+				{"Reading now", "The Name of the Wind"},
 			},
 		},
 		Contact: ContactContent{
@@ -105,7 +105,7 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 				{Label: "Email", Value: "miles.adrock@gmail.com", Href: "mailto:miles.adrock@gmail.com"},
 				{Label: "GitHub", Value: "@adrock-miles", Href: "https://github.com/adrock-miles", External: true},
 				{Label: "LinkedIn", Value: "/in/adammiles", Href: "https://www.linkedin.com/in/adammiles", External: true},
-				{Label: "Read.cv", Value: "read.cv/adam", Href: "https://read.cv/adam", External: true},
+				{Label: "Instagram", Value: "@adrock.miles", Href: "https://www.instagram.com/adrock.miles", External: true},
 			},
 		},
 	}

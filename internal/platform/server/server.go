@@ -45,6 +45,10 @@ func NewRouter(d Deps) http.Handler {
 	r.Get("/", d.Page.Index)
 	r.Post("/contact", d.Contact.Submit)
 
+	r.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.Redirect(w, r, "/static/favicon.svg", http.StatusMovedPermanently)
+	})
+
 	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(d.Static))))
 
 	return r
