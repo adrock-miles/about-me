@@ -71,12 +71,12 @@ func NewPage(tmpl *template.Template, logger *slog.Logger) *Page {
 func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 	data := PageData{
 		Title:       "Adam Miles — Software Engineer",
-		Description: "Adam Miles is a software engineer crafting calm, considered tools.",
+		Description: "Adam Miles is a software engineer who builds systems with purpose.",
 		Name:        "Adam Miles",
 		BuildTag:    "Last updated May 2026",
 		Hero: HeroContent{
 			Headline: template.HTML("Building for <em>function</em><br>and form."),
-			Tagline:  "Adam Miles is a software engineer crafting calm, considered tools — where the seams hold up under pressure and the edges still feel hand-finished.",
+			Tagline:  "Adam Miles is a software engineer who builds systems with purpose — where decisions come from reason and taste.",
 			Meta: []HeroMeta{
 				{"Currently", "Building independent"},
 				{"Based in", "Oklahoma City, OK"},
