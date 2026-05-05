@@ -15,7 +15,7 @@ server:
 # PORTFOLIO_EMAIL_RESEND_API_KEY, etc.) instead of committing secrets.
 email:
   provider: ""
-  from: "noreply@about-me.dev"
+  from: "noreply@adrock.dev"
   to: "miles.adrock@gmail.com"
   smtp:
     host: ""
