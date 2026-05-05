@@ -81,9 +81,9 @@ Everything else uses Datastar attributes:
 
 - **Signals**: `data-signals="{themeMode: 'light'}"` on a parent element
 - **Persistence**: read/write `localStorage` via `data-effect`
-- **Bind to attribute**: `data-attr-data-theme="$themeMode"`, `data-attr-aria-pressed="$themeMode === 'dark'"`
-- **Click handler**: `data-on-click="$themeMode = $themeMode === 'dark' ? 'light' : 'dark'"`
-- **Form submit (BFF)**: `data-on-submit__prevent="@post('/contact', {contentType: 'form'})"`
+- **Bind to attribute**: `data-attr:data-theme="$themeMode"`, `data-attr:aria-pressed="$themeMode === 'dark'"` (colon — `data-attr-foo` is legacy v0 syntax that silently no-ops in current Datastar)
+- **Click handler**: `data-on:click="$themeMode = $themeMode === 'dark' ? 'light' : 'dark'"`
+- **Form submit (BFF)**: `data-on:submit__prevent="@post('/contact', {contentType: 'form'})"`
 - **Server response**: SSE `datastar-patch-elements` events (use `internal/platform/sse`)
 
 Datastar uses `MutationObserver` so server-injected fragments are auto-wired
@@ -138,7 +138,7 @@ The Tailwind v4 browser CDN **only processes `<style type="text/tailwindcss">` b
 
 ## Adding a new BFF interaction
 
-1. Add a Datastar attribute to the relevant element (`data-on-click="@post('/foo', {contentType: 'form'})"`)
+1. Add a Datastar attribute to the relevant element (`data-on:click="@post('/foo', {contentType: 'form'})"`)
 2. Define a named fragment in a `web/templates/*.html` file with `{{define "foo-fragment"}}<div id="foo-area">…</div>{{end}}`
 3. Include it from the parent template: `{{template "foo-fragment" .Foo}}`
 4. Handler: validate → call service → render fragment to a `bytes.Buffer` → `sse.New(w).PatchElements("", sse.ModeOuter, buf.String())`

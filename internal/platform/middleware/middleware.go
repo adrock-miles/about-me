@@ -40,7 +40,7 @@ func StructuredLogger(logger *slog.Logger) func(http.Handler) http.Handler {
 // for a static-flavored portfolio. CSP allows the CDN scripts the site uses
 // (Tailwind v4 browser, Datastar, Google Fonts) plus the Cloudflare beacon
 // auto-injected when the zone is proxied. 'unsafe-eval' is required by
-// Datastar's runtime expression evaluator (data-signals, data-on-*, etc.).
+// Datastar's runtime expression evaluator (data-signals, data-on:*, etc.).
 func SecurityHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		h := w.Header()
