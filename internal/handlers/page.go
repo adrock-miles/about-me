@@ -87,7 +87,7 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 		About: AboutContent{
 			Paragraphs: []string{
 				"I've spent sixteen years writing software that serves — compounding experience and research into solutions that <em>just work</em>.",
-				"Most problems have already been solved — a good engineer leverages that to their advantage. For everything else, pick the <em>least bad</em> option.",
+				"Most problems have already been solved — a good engineer leverages that to their advantage. For everything else, try to pick the <em>least bad</em> option.",
 				"Outside of work I read, skate, play guitar, and watch anime — can you guess which show inspired this site's <em>design</em>?",
 			},
 			Stats: []Stat{
