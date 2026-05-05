@@ -5,12 +5,14 @@ import (
 	"io/fs"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/adrock-miles/about-me/internal/handlers"
 	"github.com/adrock-miles/about-me/internal/platform/config"
 	"github.com/adrock-miles/about-me/internal/platform/notify"
+	"github.com/adrock-miles/about-me/internal/platform/ratelimit"
 	"github.com/adrock-miles/about-me/internal/platform/server"
 	"github.com/adrock-miles/about-me/web"
 )
@@ -62,7 +64,8 @@ func runServe(cmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("loading templates: %w", err)
 	}
 	page := handlers.NewPage(tmpl, logger)
-	contact := handlers.NewContact(tmpl, mailer, logger)
+	contactLimiter := ratelimit.New(5, time.Hour)
+	contact := handlers.NewContact(tmpl, mailer, logger, contactLimiter)
 
 	staticFS, err := fs.Sub(web.Static, "static")
 	if err != nil {
