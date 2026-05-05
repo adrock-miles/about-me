@@ -39,12 +39,12 @@ internal/
     health.go                    # GET /health for Railway probe
     templates.go                 # ParseTemplates() — shared template set
   content/projects.go            # static project list (no repository abstraction)
-web/
-  embed.go                       # //go:embed templates/*.html static
-  templates/
-    index.html                   # main page
-    contact.html                 # named fragments: contact-form-area, contact-thanks
-  static/css/styles.css          # native CSS, design tokens, all components
+  web/
+    embed.go                     # //go:embed templates/*.html static
+    templates/
+      index.html                 # main page
+      contact.html               # named fragments: contact-form-area, contact-thanks
+    static/css/styles.css        # native CSS, design tokens, all components
 configs/config.yaml              # dev defaults; secrets come from env
 Makefile                         # `make help` for the full target list
 Dockerfile                       # single-stage Go build
@@ -63,7 +63,7 @@ events Datastar consumes.
 - Form submissions: accept `application/x-www-form-urlencoded` (Datastar's `@post(url, {contentType: 'form'})`)
 - Responses: stream `text/event-stream` events via `internal/platform/sse`
 - Reject requests missing the `Datastar-Request: true` header — that header is the canonical proof a request came from Datastar; it stops anyone from accidentally building a public API on top of these endpoints
-- Re-render the relevant template fragment (defined in `web/templates/contact.html`-style files) and patch it into the page using `sse.New(w).PatchElements(...)`. Default mode is `outer`; the target is found by matching the fragment's outer `id` attribute
+- Re-render the relevant template fragment (defined in `internal/web/templates/contact.html`-style files) and patch it into the page using `sse.New(w).PatchElements(...)`. Default mode is `outer`; the target is found by matching the fragment's outer `id` attribute
 - On validation failure, re-render the same fragment with the user's values preserved + an inline error — never a separate error page or JSON `{error}`
 
 Pattern reference: `internal/handlers/contact.go` is the canonical example.
@@ -124,7 +124,7 @@ Double underscores are not allowed in signal names (Datastar reserves them).
 
 The styling is intentionally **two-layered**:
 
-### Layer 1 — `web/static/css/styles.css` (native CSS, no Tailwind directives)
+### Layer 1 — `internal/web/static/css/styles.css` (native CSS, no Tailwind directives)
 
 Loaded synchronously via `<link rel="stylesheet">`. This is the source of
 truth for tokens and components. Every value goes through a CSS variable
@@ -164,13 +164,13 @@ The Tailwind v4 browser CDN **only processes `<style type="text/tailwindcss">` b
 1. New handler in `internal/handlers/foo.go` — accept the shared `*template.Template`
 2. Wire route in `internal/platform/server/server.go` + add to `server.Deps`
 3. Build deps in `cmd/server/main.go`
-4. New template in `web/templates/foo.html` — uses the same head fragment patterns from `index.html`
+4. New template in `internal/web/templates/foo.html` — uses the same head fragment patterns from `index.html`
 5. Render via `tmpl.ExecuteTemplate(w, "foo.html", data)`
 
 ## Adding a new BFF interaction
 
 1. Add a Datastar attribute to the relevant element (`data-on:click="@post('/foo', {contentType: 'form'})"`)
-2. Define a named fragment in a `web/templates/*.html` file with `{{define "foo-fragment"}}<div id="foo-area">…</div>{{end}}`
+2. Define a named fragment in a `internal/web/templates/*.html` file with `{{define "foo-fragment"}}<div id="foo-area">…</div>{{end}}`
 3. Include it from the parent template: `{{template "foo-fragment" .Foo}}`
 4. Handler: validate → call service → render fragment to a `bytes.Buffer` → `sse.New(w).PatchElements("", sse.ModeOuter, buf.String())`
 5. Handler MUST guard with `if r.Header.Get("Datastar-Request") == "" { http.Error(...); return }`
