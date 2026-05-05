@@ -104,7 +104,7 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 			Links: []ContactLink{
 				{Label: "Email", Value: "miles.adrock@gmail.com", Href: "mailto:miles.adrock@gmail.com"},
 				{Label: "GitHub", Value: "@adrock-miles", Href: "https://github.com/adrock-miles", External: true},
-				{Label: "LinkedIn", Value: "/in/adammiles", Href: "https://www.linkedin.com/in/adammiles", External: true},
+				{Label: "LinkedIn", Value: "/in/milesadam", Href: "https://www.linkedin.com/in/milesadam", External: true},
 				{Label: "Instagram", Value: "@adrock.miles", Href: "https://www.instagram.com/adrock.miles", External: true},
 			},
 		},
