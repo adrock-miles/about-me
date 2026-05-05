@@ -1,0 +1,55 @@
+{{/*
+  Contact form fragment + thank-you fragment.
+
+  Both render the same outer wrapper (#contact-form-area) so the BFF can
+  swap one for the other in place using a default datastar-patch-elements
+  event (mode=outer, target located by id).
+
+  Data shape: handlers.ContactForm — Name/Email/Subject/Body/Error.
+*/}}
+
+{{define "contact-form-area"}}
+<div id="contact-form-area">
+  <p class="contact-cta">Something interesting on your desk? Send a note.</p>
+
+  <form
+    class="contact-form"
+    data-on-submit__prevent="@post('/contact', {contentType: 'form'})"
+  >
+    {{if .Error}}
+    <p class="contact-error" role="alert">{{.Error}}</p>
+    {{end}}
+
+    <div class="contact-row">
+      <div class="contact-field">
+        <label class="contact-label" for="cf-name">Name</label>
+        <input class="contact-input" id="cf-name" name="name" required autocomplete="name" value="{{.Name}}">
+      </div>
+      <div class="contact-field">
+        <label class="contact-label" for="cf-email">Email</label>
+        <input class="contact-input" id="cf-email" name="email" type="email" required autocomplete="email" value="{{.Email}}">
+      </div>
+    </div>
+
+    <div class="contact-field">
+      <label class="contact-label" for="cf-subject">Subject <span class="contact-optional">(optional)</span></label>
+      <input class="contact-input" id="cf-subject" name="subject" autocomplete="off" value="{{.Subject}}">
+    </div>
+
+    <div class="contact-field">
+      <label class="contact-label" for="cf-body">Message</label>
+      <textarea class="contact-textarea" id="cf-body" name="body" rows="5" required>{{.Body}}</textarea>
+    </div>
+
+    <div>
+      <button type="submit" class="contact-submit">Send <span class="arrow">→</span></button>
+    </div>
+  </form>
+</div>
+{{end}}
+
+{{define "contact-thanks"}}
+<div id="contact-form-area">
+  <p class="contact-cta">Got it — thanks. I'll reply within a couple of days.</p>
+</div>
+{{end}}

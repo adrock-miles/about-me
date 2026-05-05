@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}}</title>
+<meta name="description" content="{{.Description}}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&display=swap">
+
+<!-- Design system: native CSS, theme-token CSS variables, all editorial components. -->
+<link rel="stylesheet" href="/static/css/styles.css">
+
+<!--
+  Tailwind v4 token bridge.
+  The browser CDN ONLY processes <style type="text/tailwindcss"> blocks
+  (it ignores <link rel="stylesheet" type=…> entirely), so we mirror the
+  same design-token names here so utilities like `bg-bg`, `text-fg-muted`,
+  `font-display`, `text-h-2xl`, `tracking-eyebrow`, `animate-float`, etc.
+  resolve to the same CSS vars defined in styles.css.
+
+  `inline` keeps the value as `var(--…)` so dark-mode flipping still works.
+  This block stays small on purpose — actual styling lives in styles.css.
+-->
+<style type="text/tailwindcss">
+  @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+  @theme inline {
+    /* Raw palette */
+    --color-sky:        var(--sky);
+    --color-sky-deep:   var(--sky-deep);
+    --color-cream:      var(--cream);
+    --color-paper:      var(--paper);
+    --color-paper-soft: var(--paper-soft);
+    --color-ink:        var(--ink);
+    --color-ink-soft:   var(--ink-soft);
+    --color-ink-deep:   var(--ink-deep);
+    --color-cloud:      var(--cloud);
+
+    /* Semantic, theme-aware */
+    --color-bg:           var(--bg);
+    --color-bg-band:      var(--bg-band);
+    --color-bg-band-deep: var(--bg-band-deep);
+    --color-bg-elev:      var(--bg-elev);
+    --color-fg:           var(--fg);
+    --color-fg-muted:     var(--fg-muted);
+    --color-accent:       var(--accent);
+    --color-accent-fg:    var(--accent-fg);
+    --color-rule:         var(--rule);
+    --color-silhouette:   var(--silhouette);
+    --color-hero-sky:     var(--hero-sky);
+    --color-hero-cloud:   var(--hero-cloud);
+    --color-hero-sun:     var(--hero-sun);
+    --color-hero-text:    var(--hero-text);
+
+    /* Fonts */
+    --font-display: var(--font-display);
+    --font-serif:   var(--font-serif);
+    --font-sans:    var(--font-sans);
+    --font-mono:    var(--font-mono);
+
+    /* Type scale (font-size + paired line-height/letter-spacing) */
+    --text-eyebrow: var(--text-eyebrow);
+    --text-eyebrow--line-height: 1.4;
+    --text-eyebrow--letter-spacing: var(--tracking-mono);
+
+    --text-h-md:    var(--text-h-md);
+    --text-h-md--line-height: 1.05;
+    --text-h-md--letter-spacing: -0.02em;
+
+    --text-h-2xl:   var(--text-h-2xl);
+    --text-h-2xl--line-height: 0.98;
+    --text-h-2xl--letter-spacing: -0.025em;
+
+    --text-section: var(--text-section);
+    --text-section--line-height: 1.05;
+    --text-section--letter-spacing: -0.02em;
+
+    --text-cta:     var(--text-cta);
+    --text-cta--line-height: 1.05;
+
+    /* Tracking */
+    --tracking-mono:    var(--tracking-mono);
+    --tracking-eyebrow: var(--tracking-eyebrow);
+
+    /* Spacing rhythm */
+    --spacing-section:    var(--spacing-section);
+    --spacing-section-sm: var(--spacing-section-sm);
+
+    /* Container widths */
+    --container-page: var(--container-page);
+
+    /* Radius */
+    --radius-pill: var(--radius-pill);
+
+    /* Easing */
+    --ease-editorial: var(--ease-editorial);
+
+    /* Animations (Tailwind generates animate-drift / animate-float / animate-scroll-pulse) */
+    --animate-drift:        drift 22s ease-in-out infinite;
+    --animate-float:        float 9s ease-in-out infinite;
+    --animate-scroll-pulse: scrollPulse 2.4s ease-in-out infinite;
+  }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@main/bundles/datastar.js"></script>
+
+<script>
+  // Read persisted theme before paint to avoid FOUC.
+  try {
+    var t = localStorage.getItem('adam-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  } catch (e) {}
+</script>
+</head>
+<body
+  data-signals="{themeMode: (localStorage.getItem('adam-theme') || 'light')}"
+  data-attr-data-theme="$themeMode"
+  data-effect="document.documentElement.setAttribute('data-theme', $themeMode); try { localStorage.setItem('adam-theme', $themeMode); } catch(e) {}"
+>
+
+<!-- ========== NAV ========== -->
+<nav class="nav">
+  <div class="nav-brand">
+    <button
+      class="seal-toggle"
+      type="button"
+      aria-label="Toggle day/night theme"
+      data-attr-aria-pressed="$themeMode === 'dark'"
+      data-on-click="$themeMode = $themeMode === 'dark' ? 'light' : 'dark'"
+    >
+      <svg class="icon-sun" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <circle cx="16" cy="16" r="5.5" fill="currentColor" stroke="none"></circle>
+        <line x1="16" y1="3" x2="16" y2="6.5"></line>
+        <line x1="16" y1="25.5" x2="16" y2="29"></line>
+        <line x1="3" y1="16" x2="6.5" y2="16"></line>
+        <line x1="25.5" y1="16" x2="29" y2="16"></line>
+        <line x1="6.8" y1="6.8" x2="9.3" y2="9.3"></line>
+        <line x1="22.7" y1="22.7" x2="25.2" y2="25.2"></line>
+        <line x1="6.8" y1="25.2" x2="9.3" y2="22.7"></line>
+        <line x1="22.7" y1="9.3" x2="25.2" y2="6.8"></line>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22 19.5 A9 9 0 1 1 13 6.5 A7 7 0 0 0 22 19.5 Z" fill="currentColor"></path>
+      </svg>
+    </button>
+    <span>{{.Name}}</span>
+  </div>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- ========== HERO ========== -->
+<header class="hero" id="top">
+  <div class="celestial" aria-hidden="true"></div>
+
+  <div class="cloud cloud-1" aria-hidden="true">
+    <svg viewBox="0 0 220 50" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10,40 C10,28 24,22 38,26 C42,12 60,8 74,16 C82,4 110,4 120,18 C140,14 158,22 162,34 C176,32 190,38 192,46 L196,50 L4,50 Z"></path>
+    </svg>
+  </div>
+  <div class="cloud cloud-2" aria-hidden="true">
+    <svg viewBox="0 0 140 40" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6,32 C6,22 18,18 28,22 C34,12 52,12 60,22 C72,18 88,24 92,32 C104,30 116,36 118,40 L4,40 Z"></path>
+    </svg>
+  </div>
+  <div class="cloud cloud-3" aria-hidden="true">
+    <svg viewBox="0 0 180 45" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8,38 C8,26 22,22 34,26 C38,14 56,12 68,20 C78,8 100,10 110,22 C128,18 146,26 150,36 C162,34 176,38 178,44 L4,44 Z"></path>
+    </svg>
+  </div>
+
+  <div class="skyline" aria-hidden="true">
+    <svg viewBox="0 0 1200 280" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <path class="range-far" d="M0,280 L0,170 C 80,140 160,180 240,150 C 340,110 420,170 520,140 C 620,110 700,180 800,150 C 900,120 980,170 1080,140 C 1140,122 1200,150 1200,150 L1200,280 Z" opacity="0.55"></path>
+      <path d="M0,280 L0,210 C 60,180 140,220 220,190 C 300,160 360,210 440,200 C 540,188 600,150 700,170 C 800,190 880,140 980,165 C 1060,185 1140,170 1200,200 L1200,280 Z"></path>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <span class="eyebrow hero-eyebrow">Portfolio · MMXXVI</span>
+    <h1 class="hero-headline display">{{.Hero.Headline}}</h1>
+    <p class="hero-tagline">{{.Hero.Tagline}}</p>
+
+    <div class="hero-meta">
+      {{range .Hero.Meta}}
+      <div>
+        <span class="hero-meta-label">{{.Label}}</span>
+        <span class="hero-meta-value">{{.Value}}</span>
+      </div>
+      {{end}}
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span class="mono">Scroll</span>
+    <span class="line"></span>
+  </div>
+</header>
+
+<!-- ========== WORK ========== -->
+<section id="work" class="editorial-section">
+  <div class="container-page">
+    <div class="section-head">
+      <span class="num">§ 01 — Selected Work</span>
+      <h2 class="display">Things I've <em>shipped</em>.</h2>
+    </div>
+
+    <div class="work-list">
+      {{range $i, $p := .Projects}}
+      <a class="project" href="{{$p.URL}}" target="_blank" rel="noreferrer noopener">
+        <div class="project-num">{{printf "%02d" (add $i 1)}}</div>
+        <div>
+          <h3 class="project-title">{{$p.Name}}</h3>
+          <div class="project-meta">
+            {{range $p.Languages}}<span class="tag">{{.}}</span>{{end}}
+          </div>
+        </div>
+        <p class="project-desc">{{$p.Description}}</p>
+        <div class="project-year">{{$p.UpdatedAt.Year}}</div>
+        <div class="project-arrow">→</div>
+      </a>
+      {{end}}
+    </div>
+  </div>
+</section>
+
+<!-- ========== ABOUT ========== -->
+<section id="about" class="editorial-section">
+  <div class="container-page">
+    <div class="section-head">
+      <span class="num">§ 02 — About</span>
+      <h2 class="display">A short <em>bio</em>.</h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-body">
+        {{range .About.Paragraphs}}<p>{{. | safe}}</p>{{end}}
+      </div>
+
+      <aside>
+        <div class="stat-block">
+          {{range .About.Stats}}
+          <div>
+            <span class="stat-label">{{.Label}}</span>
+            <span class="stat-val">{{.Value}}</span>
+          </div>
+          {{end}}
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section id="contact" class="contact-band">
+  <div class="container-page">
+    <div class="section-head">
+      <span class="num">§ 03 — Contact</span>
+      <h2 class="display">Let's talk.</h2>
+    </div>
+
+    {{template "contact-form-area" .Contact.Form}}
+
+    <div class="contact-links">
+      {{range .Contact.Links}}
+      <a class="contact-link" href="{{.Href}}"{{if .External}} target="_blank" rel="noreferrer noopener"{{end}}>
+        <span class="contact-link-label">{{.Label}}</span>
+        <span class="contact-link-value">{{.Value}}</span>
+      </a>
+      {{end}}
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <span class="mono">© MMXXVI · Hand-built in Brooklyn</span>
+  <span class="mono">v1.0 · {{.BuildTag}}</span>
+</footer>
+
+<script>
+  // Smooth-scroll for in-page anchors. Datastar isn't a great fit here —
+  // there's no signal/state involved, just a one-shot DOM side effect.
+  document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href');
+      if (id.length > 1) {
+        var el = document.querySelector(id);
+        if (el) {
+          e.preventDefault();
+          window.scrollTo({ top: el.offsetTop - 60, behavior: 'smooth' });
+        }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

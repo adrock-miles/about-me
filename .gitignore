@@ -10,11 +10,6 @@
 *.out
 vendor/
 
-# Frontend
-web/node_modules/
-web/dist/
-web/.env.local
-
 # IDE
 .idea/
 .vscode/
