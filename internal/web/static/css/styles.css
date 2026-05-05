@@ -13,9 +13,16 @@
    Theme switching: toggle [data-theme="dark"] on <html> or <body>.
    ========================================================================== */
 
-/* ---------- Raw brand palette + semantic theme tokens ---------- */
-:root,
-[data-theme="light"] {
+/* ---------- Raw brand palette + semantic theme tokens ----------
+   Defaults live on :root only. Dark mode overrides the theme-aware
+   tokens via [data-theme="dark"]. There's intentionally no
+   [data-theme="light"] selector: light is the absence of dark, so
+   body inherits all defaults from :root. (An earlier `:root,
+   [data-theme="light"]` selector silently re-set --spacing-page-x:
+   40px on <body> in light mode while the mobile media query only
+   patched :root, leaving the page with 40px gutters in light/mobile
+   and 20px in dark/mobile.) */
+:root {
   /* Raw brand palette */
   --sky:        #E8843D;
   --sky-deep:   #D9722A;
