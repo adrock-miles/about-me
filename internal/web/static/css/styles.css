@@ -205,6 +205,10 @@ body {
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   background: color-mix(in oklab, var(--bg) 72%, transparent);
+  /* Match the body's 600ms theme fade so the nav doesn't snap while
+     everything underneath it crossfades. */
+  transition: background-color 600ms var(--ease-editorial),
+              border-color     600ms var(--ease-editorial);
 }
 .nav-brand {
   display: flex;
@@ -246,11 +250,19 @@ body {
 /* Sun ↔ Moon theme toggle */
 .seal-toggle {
   position: relative;
-  display: inline-grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  /* Lock width on every axis so the sun's wider painted area (rays out
+     to the edges) can't appear to nudge the name in light mode while the
+     moon's tighter crescent leaves slack in dark mode. */
+  box-sizing: border-box;
   width: 32px;
+  min-width: 32px;
+  max-width: 32px;
   height: 32px;
+  overflow: hidden;
   border: 0;
   margin: 0;
   padding: 0;
@@ -268,8 +280,9 @@ body {
 .seal-toggle svg {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
 }
 .seal-toggle .icon-sun,
 .seal-toggle .icon-moon {
@@ -285,7 +298,10 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
+  /* svh tracks the smallest viewport (URL bar visible) so the hero never
+     overshoots the visible area on mobile. vh is kept as a fallback. */
   min-height: 100vh;
+  min-height: 100svh;
   overflow: hidden;
   background: var(--hero-sky);
   transition: background 600ms var(--ease-editorial);
@@ -544,6 +560,8 @@ body {
   background: var(--bg-band);
   color: var(--paper);
   padding: 160px var(--spacing-page-x) 60px;
+  transition: background-color 600ms var(--ease-editorial),
+              color            600ms var(--ease-editorial);
 }
 [data-theme="dark"] .contact-band {
   background: var(--bg-band-deep);
@@ -715,6 +733,8 @@ body {
   background: var(--bg-band);
   color: var(--paper);
   border-top: 1px solid rgba(255,255,255,0.15);
+  transition: background-color 600ms var(--ease-editorial),
+              border-color     600ms var(--ease-editorial);
 }
 [data-theme="dark"] .site-footer {
   background: var(--bg-band-deep);
@@ -734,9 +754,17 @@ body {
   .nav-links a { display: none; }
   .nav-brand   { display: flex; }
 
-  .hero-content       { padding: 140px var(--spacing-page-x) 0; }
+  /* Vertical-center hero content so the empty sky between the headline
+     and the skyline is balanced (and not bottom-heavy) on phones. */
+  .hero               { justify-content: center; }
+  .hero-content       { padding: 120px var(--spacing-page-x) 32px; flex: 0 1 auto; }
   .editorial-section  { padding: var(--spacing-section-sm) var(--spacing-page-x); }
   .section-head       { grid-template-columns: 1fr; gap: 12px; margin-bottom: 50px; }
+
+  /* Shrink + raise the scroll cue so it floats cleanly inside the section's
+     top padding without crashing into section-head's border on mobile. */
+  .scroll-cue       { top: 14px; gap: 6px; }
+  .scroll-cue .line { height: 28px; }
 
   .project       { grid-template-columns: 1fr; gap: 12px; }
   .project-arrow { display: none; }
@@ -744,11 +772,13 @@ body {
 
   .about-grid    { grid-template-columns: 1fr; gap: 40px; }
 
-  .contact-band  { padding: 90px var(--spacing-page-x) 40px; }
-  .contact-links { grid-template-columns: 1fr 1fr; }
+  .contact-band  { padding: 80px var(--spacing-page-x) 32px; }
+  .contact-form  { margin: 0 0 40px; }
+  .contact-cta   { margin: 0 0 40px; }
+  .contact-links { grid-template-columns: 1fr 1fr; padding-top: 28px; }
   .contact-row   { grid-template-columns: 1fr; }
 
   .skyline       { width: 100%; height: 24%; right: 0; bottom: -4%; opacity: 0.9; }
   .hero-meta     { gap: 24px; }
-  .site-footer   { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .site-footer   { flex-direction: column; gap: 8px; align-items: flex-start; padding: 22px var(--spacing-page-x); }
 }
