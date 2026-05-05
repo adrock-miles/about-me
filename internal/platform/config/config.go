@@ -107,5 +107,5 @@ func setDefaults(v *viper.Viper) {
 	v.SetDefault("email.to", "miles.adrock@gmail.com")
 	v.SetDefault("email.smtp.port", 587)
 
-	v.SetDefault("site.base_url", "https://adrock.dev")
+	v.SetDefault("site.base_url", "http://localhost:8080")
 }
