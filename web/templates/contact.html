@@ -14,7 +14,7 @@
 
   <form
     class="contact-form"
-    data-on-submit__prevent="@post('/contact', {contentType: 'form'})"
+    data-on:submit__prevent="@post('/contact', {contentType: 'form'})"
   >
     {{if .Error}}
     <p class="contact-error" role="alert">{{.Error}}</p>
