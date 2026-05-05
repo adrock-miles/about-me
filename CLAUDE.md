@@ -79,15 +79,46 @@ libraries. The two exceptions:
 
 Everything else uses Datastar attributes:
 
-- **Signals**: `data-signals="{themeMode: 'light'}"` on a parent element
+- **Signals**: `data-signals="{_themeMode: 'light'}"` on a parent element
 - **Persistence**: read/write `localStorage` via `data-effect`
-- **Bind to attribute**: `data-attr:data-theme="$themeMode"`, `data-attr:aria-pressed="$themeMode === 'dark'"` (colon — `data-attr-foo` is legacy v0 syntax that silently no-ops in current Datastar)
-- **Click handler**: `data-on:click="$themeMode = $themeMode === 'dark' ? 'light' : 'dark'"`
+- **Bind to attribute**: `data-attr:data-theme="$_themeMode"`, `data-attr:aria-pressed="$_themeMode === 'dark'"` (colon — `data-attr-foo` is legacy v0 syntax that silently no-ops in current Datastar)
+- **Click handler**: `data-on:click="$_themeMode = $_themeMode === 'dark' ? 'light' : 'dark'"`
 - **Form submit (BFF)**: `data-on:submit__prevent="@post('/contact', {contentType: 'form'})"`
 - **Server response**: SSE `datastar-patch-elements` events (use `internal/platform/sse`)
 
 Datastar uses `MutationObserver` so server-injected fragments are auto-wired
 without re-bootstrapping.
+
+### Always pass `{contentType: 'form'}` on backend actions
+
+Every `@post` / `@get` / `@put` / `@delete` / `@patch` issued from a form-bearing
+element MUST pass `{contentType: 'form'}`. The default is `json`, which sends
+**every signal in scope** as a JSON body — that's the wrong contract for this
+app. Our handlers are BFFs that read from `r.ParseForm()` (`application/x-www-form-urlencoded`),
+and the form's `name=` attributes are the canonical wire format. Sending JSON
+would skip the form fields entirely, ship unrelated UI signals to the server,
+and silently break validation. If a backend action is ever attached to an
+element with no enclosing `<form>`, build a real form rather than falling back
+to the JSON default.
+
+### Prefix UI-only signals with `_`
+
+Datastar excludes signals whose name starts with a single underscore from
+backend request payloads (when the request *does* serialize signals — e.g. the
+`json` content type, or `filterSignals` overrides). Any signal that exists
+purely for client-side UI state — loading indicators, theme toggles, open/closed
+disclosures, hover/focus mirrors — MUST be `_`-prefixed:
+
+- `data-indicator="_sending"` (not `data-indicator:sending`)
+- `data-signals="{_themeMode: 'light', _menuOpen: false}"`
+- Reference as `$_sending`, `$_themeMode` in expressions
+
+Reserve unprefixed signal names for values that genuinely need to round-trip to
+the server. Even with `contentType: 'form'` shielding us today, the prefix is
+the source-level signal that "this never leaves the browser" — it survives
+future refactors that swap content types or add new endpoints.
+
+Double underscores are not allowed in signal names (Datastar reserves them).
 
 ## Design system + Tailwind rules
 
@@ -178,3 +209,5 @@ generic `PORT` is also bound directly. Defaults live in
 - Don't use `@apply` in `styles.css` — the file is loaded as plain CSS, not Tailwind-processed.
 - Don't bypass the `Datastar-Request` header guard on BFF endpoints.
 - Don't add a `<script>` tag for state/event-handling — use Datastar attributes.
+- Don't issue a Datastar backend action without `{contentType: 'form'}` — the JSON default ships the signal store as the body, which is never what we want.
+- Don't introduce a new client-only signal without the `_` prefix — naked names imply the signal participates in a backend round-trip.
