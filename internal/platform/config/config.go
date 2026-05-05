@@ -103,7 +103,7 @@ func setDefaults(v *viper.Viper) {
 	v.SetDefault("server.shutdown_grace", 10*time.Second)
 
 	v.SetDefault("email.provider", "")
-	v.SetDefault("email.from", "noreply@about-me.dev")
+	v.SetDefault("email.from", "noreply@adrock.dev")
 	v.SetDefault("email.to", "miles.adrock@gmail.com")
 	v.SetDefault("email.smtp.port", 587)
 
