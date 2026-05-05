@@ -5,10 +5,12 @@ import (
 	"errors"
 	"html/template"
 	"log/slog"
+	"net"
 	"net/http"
 	"strings"
 
 	"github.com/adrock-miles/about-me/internal/platform/notify"
+	"github.com/adrock-miles/about-me/internal/platform/ratelimit"
 	"github.com/adrock-miles/about-me/internal/platform/sse"
 )
 
@@ -38,14 +40,17 @@ func (f ContactForm) validate() error {
 
 // Contact handles inbound contact-form submissions as a Datastar BFF.
 type Contact struct {
-	tmpl   *template.Template
-	mailer *notify.Mailer
-	logger *slog.Logger
+	tmpl    *template.Template
+	mailer  *notify.Mailer
+	logger  *slog.Logger
+	limiter *ratelimit.Limiter
 }
 
 // NewContact builds a Contact handler bound to the parsed template set.
-func NewContact(tmpl *template.Template, mailer *notify.Mailer, logger *slog.Logger) *Contact {
-	return &Contact{tmpl: tmpl, mailer: mailer, logger: logger}
+// The limiter throttles submissions per client IP and is consulted before
+// validation so spammers can't bypass it with malformed payloads.
+func NewContact(tmpl *template.Template, mailer *notify.Mailer, logger *slog.Logger, limiter *ratelimit.Limiter) *Contact {
+	return &Contact{tmpl: tmpl, mailer: mailer, logger: logger, limiter: limiter}
 }
 
 // Submit accepts a urlencoded form POST from Datastar and streams back
@@ -69,6 +74,14 @@ func (c *Contact) Submit(w http.ResponseWriter, r *http.Request) {
 		Email:   r.FormValue("email"),
 		Subject: r.FormValue("subject"),
 		Body:    r.FormValue("body"),
+	}
+
+	ip := clientIP(r)
+	if !c.limiter.Allow(ip) {
+		c.logger.Warn("contact form rate limited", "ip", ip)
+		form.Error = "Too many submissions just now — please wait a few minutes before trying again."
+		c.patchForm(w, form)
+		return
 	}
 
 	if err := form.validate(); err != nil {
@@ -101,6 +114,16 @@ func (c *Contact) patchForm(w http.ResponseWriter, form ContactForm) {
 // patchThanks streams the thank-you fragment.
 func (c *Contact) patchThanks(w http.ResponseWriter) {
 	c.patchFragment(w, "contact-thanks", nil)
+}
+
+// clientIP returns the host portion of r.RemoteAddr (which chi.RealIP has
+// already resolved from X-Forwarded-For when running behind a proxy).
+func clientIP(r *http.Request) string {
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return r.RemoteAddr
+	}
+	return host
 }
 
 func (c *Contact) patchFragment(w http.ResponseWriter, name string, data any) {
