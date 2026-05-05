@@ -2,81 +2,79 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"net/http"
+	"io/fs"
+	"log/slog"
 	"os"
 
-	"github.com/adrock-miles/about-me/internal/application/contact"
-	"github.com/adrock-miles/about-me/internal/application/project"
-	"github.com/adrock-miles/about-me/internal/infrastructure/email"
-	projectRepo "github.com/adrock-miles/about-me/internal/infrastructure/project"
-	"github.com/adrock-miles/about-me/internal/interfaces/http/handler"
-	"github.com/adrock-miles/about-me/internal/interfaces/http/router"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+
+	"github.com/adrock-miles/about-me/internal/handlers"
+	"github.com/adrock-miles/about-me/internal/platform/config"
+	"github.com/adrock-miles/about-me/internal/platform/notify"
+	"github.com/adrock-miles/about-me/internal/platform/server"
+	"github.com/adrock-miles/about-me/web"
 )
 
-var rootCmd = &cobra.Command{
-	Use:   "about-me",
-	Short: "Personal portfolio site server",
-	Long:  "A personal portfolio website backend built with Go, serving a React frontend.",
-	RunE:  runServer,
-}
-
-func init() {
-	cobra.OnInitialize(initConfig)
-
-	rootCmd.Flags().IntP("port", "p", 8080, "Port to run the server on")
-	rootCmd.Flags().StringP("host", "H", "0.0.0.0", "Host to bind the server to")
-
-	viper.BindPFlag("server.port", rootCmd.Flags().Lookup("port"))
-	viper.BindPFlag("server.host", rootCmd.Flags().Lookup("host"))
-}
-
-func initConfig() {
-	viper.SetConfigName("config")
-	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./configs")
-	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
-
-	// Bind PORT env var (used by Railway and other PaaS providers)
-	viper.BindEnv("server.port", "PORT")
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("Warning: no config file found: %v", err)
-	}
-}
-
-func runServer(cmd *cobra.Command, args []string) error {
-	// Infrastructure layer
-	projects := projectRepo.NewStaticRepository()
-	emailSender := email.NewSender(
-		viper.GetString("smtp.host"),
-		viper.GetInt("smtp.port"),
-		viper.GetString("smtp.from"),
-		viper.GetString("contact.email"),
-	)
-
-	// Application layer
-	projectService := project.NewService(projects)
-	contactService := contact.NewService(emailSender, viper.GetString("contact.email"))
-
-	// Interface layer
-	projectHandler := handler.NewProjectHandler(projectService)
-	contactHandler := handler.NewContactHandler(contactService)
-
-	r := router.New(projectHandler, contactHandler)
-
-	addr := fmt.Sprintf("%s:%d", viper.GetString("server.host"), viper.GetInt("server.port"))
-	log.Printf("Starting server on %s", addr)
-
-	return http.ListenAndServe(addr, r)
-}
-
 func main() {
-	if err := rootCmd.Execute(); err != nil {
+	root := &cobra.Command{
+		Use:   "about-me",
+		Short: "Personal portfolio site server",
+		Long:  "Server-rendered portfolio site (Go + Datastar + Tailwind v4).",
+		RunE:  runServe,
+	}
+
+	root.AddCommand(serveCmd())
+
+	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+func serveCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "serve",
+		Short: "Start the HTTP server (default)",
+		RunE:  runServe,
+	}
+	return cmd
+}
+
+// init registers `serve` as the default subcommand so `./about-me` and
+// `./about-me serve` behave the same — handy for entrypoints/PaaS.
+func init() {
+	cobra.EnableCommandSorting = false
+}
+
+func runServe(cmd *cobra.Command, _ []string) error {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
+	slog.SetDefault(logger)
+
+	cfg, err := config.Load()
+	if err != nil {
+		return fmt.Errorf("loading config: %w", err)
+	}
+
+	mailer := notify.NewMailer(cfg.Email, logger)
+
+	tmpl, err := handlers.ParseTemplates(web.Templates)
+	if err != nil {
+		return fmt.Errorf("loading templates: %w", err)
+	}
+	page := handlers.NewPage(tmpl, logger)
+	contact := handlers.NewContact(tmpl, mailer, logger)
+
+	staticFS, err := fs.Sub(web.Static, "static")
+	if err != nil {
+		return fmt.Errorf("static fs: %w", err)
+	}
+
+	router := server.NewRouter(server.Deps{
+		Page:    page,
+		Contact: contact,
+		Static:  staticFS,
+		Logger:  logger,
+	})
+
+	return server.Run(cmd.Context(), cfg.Server, logger, router)
 }
