@@ -59,7 +59,7 @@ func runServe(cmd *cobra.Command, _ []string) error {
 
 	mailer := notify.NewMailer(cfg.Email, logger)
 
-	tmpl, err := handlers.ParseTemplates(web.Templates)
+	tmpl, err := handlers.ParseTemplates(web.Templates, web.AssetVersion)
 	if err != nil {
 		return fmt.Errorf("loading templates: %w", err)
 	}
