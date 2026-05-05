@@ -18,8 +18,8 @@ func Projects() []Project {
 	return []Project{
 		{
 			Name:        "magc",
-			Description: "Real-time blood glucose and CGM tracking. A Go backend pulls from Dexcom and LibreLinkUp, streams readings live over SSE, and pairs with native iOS, watchOS, and widget companions in Swift.",
-			Languages:   []string{"Go", "Swift"},
+			Description: "Real-time blood glucose tracking with live alerts for friends and family. Integrates with CGMs like Dexcom and LibreLinkUp, plus native iOS, watchOS, and widget companions.",
+			Languages:   []string{"Go", "Swift", "Postgres"},
 			URL:         "https://magc.app/",
 			UpdatedAt:   time.Date(2026, 5, 5, 0, 0, 0, 0, time.UTC),
 		},
@@ -39,7 +39,7 @@ func Projects() []Project {
 		},
 		{
 			Name:        "go-laserbeak",
-			Description: "A Discord LLM bot in Go. Joins voice channels, listens for a wake phrase, and replies via any OpenAI-compatible API. Built with Cobra, Viper, and DDD.",
+			Description: "A Discord LLM bot in Go. Listens for a wake phrase in voice channels, transcribes speech via the OpenAI Whisper API, and replies through any OpenAI-compatible chat model.",
 			Languages:   []string{"Go"},
 			URL:         "https://github.com/adrock-miles/go-laserbeak",
 			UpdatedAt:   time.Date(2026, 3, 2, 0, 0, 0, 0, time.UTC),
