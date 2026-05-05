@@ -101,6 +101,13 @@ and silently break validation. If a backend action is ever attached to an
 element with no enclosing `<form>`, build a real form rather than falling back
 to the JSON default.
 
+Put `data-indicator` on the element that owns the backend action (the `<form>`
+with the `@post`), not on a child button that just triggers submit. Datastar
+flips the indicator signal around the action's lifecycle, so it has to live on
+the action's element. The submit button can still read the signal
+(`data-attr:disabled="$_sending"`, show/hide spans), but it shouldn't declare
+the indicator.
+
 ### Prefix UI-only signals with `_`
 
 Datastar excludes signals whose name starts with a single underscore from
