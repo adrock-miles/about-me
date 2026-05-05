@@ -42,7 +42,15 @@
     </div>
 
     <div>
-      <button type="submit" class="contact-submit">Send <span class="arrow">→</span></button>
+      <button
+        type="submit"
+        class="contact-submit"
+        data-indicator:sending
+        data-attr:disabled="$sending"
+      >
+        <span data-show="!$sending">Send <span class="arrow">→</span></span>
+        <span data-show="$sending">Sending&hellip;</span>
+      </button>
     </div>
   </form>
 </div>
