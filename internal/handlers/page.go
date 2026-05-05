@@ -86,7 +86,7 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 		Projects: content.Projects(),
 		About: AboutContent{
 			Paragraphs: []string{
-				"I've spent sixteen years writing software that has to <em>actually work</em> — for people, in the wild, on the worst day of their week. Systems people lean on quietly.",
+				"I've spent sixteen years writing software that serves — compounding experience and research into solutions that <em>just work</em>.",
 				"I move between the runtime and the interface comfortably. There's no silver bullet for building systems — but there are plenty of bad decisions you can avoid. The right answer is usually a structural one, not a feature.",
 				"Outside of work I read, skate, play guitar, and spend time on anything creative — which is where the love of <em>silhouette and weight</em> in this site comes from.",
 			},
