@@ -76,7 +76,7 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 		BuildTag:    "Last updated May 2026",
 		Hero: HeroContent{
 			Headline: template.HTML("Building for <em>function</em><br>and form."),
-			Tagline:  "Adam Miles is a software engineer who builds systems with purpose — where decisions are made with intention.",
+			Tagline:  "Adam Miles is a software engineer who builds systems with intention — sixteen years and counting.",
 			Meta: []HeroMeta{
 				{"Currently", "Building independent"},
 				{"Based in", "Oklahoma City, OK"},
@@ -87,8 +87,8 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 		About: AboutContent{
 			Paragraphs: []string{
 				"I've spent sixteen years writing software that serves — compounding experience and research into solutions that <em>just work</em>.",
-				"I move between the runtime and the interface comfortably. There's no silver bullet for building systems — but there are plenty of bad decisions you can avoid. The right answer is usually a structural one, not a feature.",
-				"Outside of work I read, skate, play guitar, spend time on anything creative, and watch anime — can you guess which show inspired this site's <em>design</em>?",
+				"Most problems have already been solved — a good engineer leverages that to their advantage. For everything else, try to pick the <em>least bad</em> option.",
+				"Outside of work I read, skate, play guitar, and watch anime — can you guess which show inspired this site's <em>design</em>?",
 			},
 			Stats: []Stat{
 				{"Years building", "16"},
