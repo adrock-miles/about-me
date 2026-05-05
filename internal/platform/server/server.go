@@ -49,9 +49,21 @@ func NewRouter(d Deps) http.Handler {
 		http.Redirect(w, r, "/static/favicon.svg", http.StatusMovedPermanently)
 	})
 
-	r.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.FS(d.Static))))
+	r.Handle("/static/*", http.StripPrefix("/static/", staticCache(http.FileServer(http.FS(d.Static)))))
 
 	return r
+}
+
+// staticCache instructs browsers and CDNs to cache /static/* responses
+// for a year. Safe because every asset URL carries a content-hash `?v=`
+// query parameter (see web.AssetVersion + the `asset` template func) —
+// the URL changes whenever the underlying file changes, so caches never
+// serve stale content past a deploy.
+func staticCache(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "public, max-age=31536000")
+		next.ServeHTTP(w, r)
+	})
 }
 
 // Run starts the HTTP server and blocks until SIGINT/SIGTERM is received,
