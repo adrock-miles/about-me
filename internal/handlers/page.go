@@ -76,7 +76,7 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 		BuildTag:    "Last updated May 2026",
 		Hero: HeroContent{
 			Headline: template.HTML("Building for <em>function</em><br>and form."),
-			Tagline:  "Adam Miles is a software engineer who builds systems with purpose — where decisions come from reason and taste.",
+			Tagline:  "Adam Miles is a software engineer who builds systems with purpose — where decisions are made with intention.",
 			Meta: []HeroMeta{
 				{"Currently", "Building independent"},
 				{"Based in", "Oklahoma City, OK"},
