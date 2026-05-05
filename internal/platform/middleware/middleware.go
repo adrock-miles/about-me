@@ -38,7 +38,9 @@ func StructuredLogger(logger *slog.Logger) func(http.Handler) http.Handler {
 
 // SecurityHeaders sets a conservative baseline of response headers suitable
 // for a static-flavored portfolio. CSP allows the CDN scripts the site uses
-// (Tailwind v4 browser, Datastar, Google Fonts).
+// (Tailwind v4 browser, Datastar, Google Fonts) plus the Cloudflare beacon
+// auto-injected when the zone is proxied. 'unsafe-eval' is required by
+// Datastar's runtime expression evaluator (data-signals, data-on-*, etc.).
 func SecurityHeaders(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		h := w.Header()
@@ -48,11 +50,11 @@ func SecurityHeaders(next http.Handler) http.Handler {
 		h.Set("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
 		h.Set("Content-Security-Policy",
 			"default-src 'self'; "+
-				"script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "+
+				"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://static.cloudflareinsights.com; "+
 				"style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "+
 				"font-src 'self' https://fonts.gstatic.com; "+
 				"img-src 'self' data:; "+
-				"connect-src 'self'; "+
+				"connect-src 'self' https://cdn.jsdelivr.net https://cloudflareinsights.com; "+
 				"base-uri 'self'; "+
 				"form-action 'self'",
 		)
