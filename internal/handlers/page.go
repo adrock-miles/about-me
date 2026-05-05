@@ -88,7 +88,7 @@ func (p *Page) Index(w http.ResponseWriter, r *http.Request) {
 			Paragraphs: []string{
 				"I've spent sixteen years writing software that serves — compounding experience and research into solutions that <em>just work</em>.",
 				"I move between the runtime and the interface comfortably. There's no silver bullet for building systems — but there are plenty of bad decisions you can avoid. The right answer is usually a structural one, not a feature.",
-				"Outside of work I read, skate, play guitar, spend time on anything creative, and watch anime — can you guess which show inspired the <em>silhouette and weight</em> of this site?",
+				"Outside of work I read, skate, play guitar, spend time on anything creative, and watch anime — can you guess which show inspired this site's <em>design</em>?",
 			},
 			Stats: []Stat{
 				{"Years building", "16"},
